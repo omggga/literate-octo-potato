@@ -25,6 +25,9 @@
   <!-- ===== Params / Vars ===== -->
   <xsl:param name="_mode"/>
   <xsl:param name="data-url"/>
+  <xsl:param name="stamp-urls" as="xs:string*" select="()"/>
+  <xsl:param name="stamps-per-row" as="xs:integer" select="3"/>
+  <xsl:param name="stamp-width" as="xs:string" select="'60mm'"/>
   <xsl:variable name="field_name_width" select="'40%'"/>
   <xsl:variable name="UnitPrecision" select="t:envelope/*/t:fund/@unit-precision"/>
 
@@ -134,17 +137,51 @@
                                page-width="210mm" page-height="297mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="20mm" margin-right="20mm">
-          <fo:region-body margin-top="5mm"/>
+          <fo:region-body margin-top="5mm" margin-bottom="25mm"/>
+          <fo:region-after extent="20mm"/>
         </fo:simple-page-master>
         <fo:simple-page-master master-name="landscape"
                                page-width="297mm" page-height="210mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="15mm" margin-right="15mm">
-          <fo:region-body margin-top="5mm"/>
+          <fo:region-body margin-top="5mm" margin-bottom="25mm"/>
+          <fo:region-after extent="20mm"/>
         </fo:simple-page-master>
       </fo:layout-master-set>
 
       <fo:page-sequence master-reference="{$orient}">
+        <fo:static-content flow-name="xsl-region-after">
+            <xsl:if test="exists($stamp-urls)">
+                <fo:table table-layout="fixed" width="100%">
+                <xsl:variable name="cols" select="min(($stamps-per-row, count($stamp-urls)))"/>
+                <xsl:for-each select="1 to $cols">
+                    <fo:table-column column-width="proportional-column-width(1)"/>
+                </xsl:for-each>
+                <fo:table-body>
+                    <xsl:for-each-group select="$stamp-urls"
+                                        group-adjacent="floor((position()-1) div $stamps-per-row)">
+                    <fo:table-row>
+                        <xsl:for-each select="current-group()">
+                        <fo:table-cell display-align="center">
+                            <fo:block text-align="center">
+                            <fo:external-graphic
+                                src="url({.})"
+                                width="{$stamp-width}"
+                                content-width="scale-down-to-fit"
+                                scaling="uniform"/>
+                            </fo:block>
+                        </fo:table-cell>
+                        </xsl:for-each>
+                        <xsl:for-each select="1 to $stamps-per-row - count(current-group())">
+                        <fo:table-cell><fo:block/></fo:table-cell>
+                        </xsl:for-each>
+                    </fo:table-row>
+                    </xsl:for-each-group>
+                </fo:table-body>
+                </fo:table>
+            </xsl:if>
+        </fo:static-content>
+
         <fo:flow flow-name="xsl-region-body" xsl:use-attribute-sets="base.text">
           <xsl:apply-templates select="t:*" mode="body"/>
           <xsl:call-template name="dsig_data"/>
@@ -167,10 +204,11 @@
       <fo:inline> </fo:inline>
       <xsl:for-each select="t:rpt-data/t:opr-info[count(. | key('total_key', @code)[1])=1]">
         <fo:inline>
-          <xsl:value-of select="@code"/> - <xsl:call-template name="oper-text"/>; 
+          <xsl:value-of select="@code"/> - <xsl:call-template name="oper-text"/>;
         </fo:inline>
       </xsl:for-each>
     </fo:block>
+
   </xsl:template>
 
   <!-- ===== Report table (details + totals) ===== -->
