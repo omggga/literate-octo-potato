@@ -76,7 +76,7 @@
     <xsl:attribute name="padding">1.2pt</xsl:attribute>
     <xsl:attribute name="wrap-option">wrap</xsl:attribute>
     <xsl:attribute name="hyphenate">true</xsl:attribute>
-</xsl:attribute-set>
+  </xsl:attribute-set>
 
 
   <xsl:attribute-set name="table.form_table2.body.cell">
@@ -532,7 +532,7 @@
     </xsl:template>
 
     <xsl:template name="zwsp-chunk">
-    <xsl:param name="s"/>
+        <xsl:param name="s"/>
         <xsl:param name="n" select="64"/>
         <xsl:if test="string-length($s) &gt; 0">
             <xsl:value-of select="substring($s,1,$n)"/>
