@@ -28,7 +28,7 @@
   <xsl:param name="stamp-list"/>
   <xsl:param name="stamps-per-row" select="3"/>
   <xsl:param name="stamp-width"    select="'60mm'"/>
-  <xsl:param name="stamp-height" select="'16mm'"/>
+  <xsl:param name="stamp-height" select="'25mm'"/>
   <xsl:variable name="field_name_width" select="'40%'"/>
   <xsl:variable name="UnitPrecision" select="t:envelope/*/t:fund/@unit-precision"/>
 
