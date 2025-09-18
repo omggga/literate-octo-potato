@@ -114,6 +114,11 @@
     <xsl:attribute name="space-before">6pt</xsl:attribute>
   </xsl:attribute-set>
 
+  <xsl:attribute-set name="cell.wrap">
+    <xsl:attribute name="wrap-option">wrap</xsl:attribute>
+    <xsl:attribute name="hyphenate">true</xsl:attribute>
+  </xsl:attribute-set>
+
   <!-- ===== Page orientation API (compatible with your usage) ===== -->
   <xsl:template name="orient">landscape</xsl:template>
   <!-- main file overrides to landscape; we keep same name and call it -->
@@ -334,11 +339,6 @@
           </xsl:choose>
         </fo:block>
       </fo:table-cell>
-
-      <xsl:attribute-set name="cell.wrap">
-        <xsl:attribute name="wrap-option">wrap</xsl:attribute>
-        <xsl:attribute name="hyphenate">true</xsl:attribute>
-      </xsl:attribute-set>
 
       <!-- Основание операции -->
       <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell cell.wrap">
