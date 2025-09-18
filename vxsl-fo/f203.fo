@@ -138,15 +138,15 @@
                                page-width="210mm" page-height="297mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="20mm" margin-right="20mm">
-                <fo:region-body margin-top="5mm" margin-bottom="5mm"/>
-                <fo:region-after extent="28mm"/>
+                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
+                <fo:region-after extent="40mm" display-align="before"/>
             </fo:simple-page-master>
             <fo:simple-page-master master-name="landscape"
                                page-width="297mm" page-height="210mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="15mm" margin-right="15mm">
-                <fo:region-body margin-top="5mm" margin-bottom="5mm"/>
-                <fo:region-after extent="28mm"/>
+                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
+                <fo:region-after extent="40mm" display-align="before"/>
             </fo:simple-page-master>
         </fo:layout-master-set>
 
@@ -504,7 +504,7 @@
   </xsl:template>
 
   <xsl:template name="шапка_прсд">
-    <fo:block space-after="6pt" border-bottom="0.5pt solid #C0C0C0" padding-bottom="4pt" text-align="center">
+    <fo:block space-after="3pt" border-bottom="0.5pt solid #C0C0C0" padding-bottom="4pt" text-align="center">
       <fo:block font-weight="bold" font-size="8pt">ЗАО "Первый Специализированный Депозитарий"</fo:block>
       <fo:block font-size="7pt">ОГРН:1027700373678, Почтовый адрес: 125167 Москва, 4-я ул. 8 Марта, д. 6А. тел: +7 (495) 223-6607</fo:block>
     </fo:block>
