@@ -109,7 +109,7 @@
   </xsl:attribute-set>
 
   <!-- ===== Page orientation API (compatible with your usage) ===== -->
-  <xsl:template name="orient">portrait</xsl:template>
+  <xsl:template name="orient">landscape</xsl:template>
   <!-- main file overrides to landscape; we keep same name and call it -->
 
   <!-- ===== Root: envelope → FO ===== -->
