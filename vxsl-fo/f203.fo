@@ -821,7 +821,7 @@
             <fo:table-cell display-align="center">
                 <fo:block text-align="center" line-height="0" space-before="0pt" space-after="0pt">
                     <fo:external-graphic
-                    src="url('{$u}')"
+                    src="{concat('url(''', $head, ''')')}"
                     content-width="scale-down-to-fit"
                     content-height="{$stamp-height}"
                     scaling="uniform"/>
