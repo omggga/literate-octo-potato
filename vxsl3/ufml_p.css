@@ -1,0 +1,53 @@
+.Rportrait
+{
+	height: 100%;
+	width: 100%;
+	padding: 0cm;
+	margin: 0;
+	page-break-before1: always
+}
+
+.Rportrait_first
+{
+	height: 100%;
+	width: 100%;
+	padding: 0cm;
+	margin: 0;
+}
+
+.portrait
+{ 
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding : 0;
+}
+
+.Rlandscape
+{
+	height: 19cm;
+	width: 28cm;
+	margin: 0;
+	padding : 0cm;
+	page-break-before1: always
+}
+
+.Rlandscape_first
+{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding : 0cm;
+}
+
+.landscape
+{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding : 0;
+}
+
+.noprint { display: none; }
+
+

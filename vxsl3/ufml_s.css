@@ -1,0 +1,61 @@
+.Rportrait
+{
+    BORDER-RIGHT: black 4px solid;
+    PADDING-RIGHT: 1cm;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 1cm;
+    PADDING-BOTTOM: 1cm;
+    MARGIN: 10px;
+    BORDER-LEFT: black 1px solid;
+    WIDTH: 20.5cm;
+    PADDING-TOP: 1cm;
+    BORDER-BOTTOM: black 4px solid;
+    BACKGROUND-COLOR: white
+}
+
+.Rlandscape
+{
+    BORDER-RIGHT: black 4px solid;
+    PADDING-RIGHT: 1cm;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 1cm;
+    PADDING-BOTTOM: 1cm;
+    MARGIN: 10px;
+    BORDER-LEFT: black 1px solid;
+    WIDTH: 29cm;
+    PADDING-TOP: 1cm;
+    BORDER-BOTTOM: black 4px solid;
+    BACKGROUND-COLOR: white;
+    TEXT-ALIGN: center
+}
+
+.Rportrait_first
+{
+    BORDER-RIGHT: black 4px solid;
+    PADDING-RIGHT: 1cm;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 1cm;
+    PADDING-BOTTOM: 1cm;
+    MARGIN: 10px;
+    BORDER-LEFT: black 1px solid;
+    WIDTH: 20.5cm;
+    PADDING-TOP: 1cm;
+    BORDER-BOTTOM: black 4px solid;
+    BACKGROUND-COLOR: white
+}
+
+.Rlandscape_first
+{
+    BORDER-RIGHT: black 4px solid;
+    PADDING-RIGHT: 1cm;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 1cm;
+    PADDING-BOTTOM: 1cm;
+    MARGIN: 10px;
+    BORDER-LEFT: black 1px solid;
+    WIDTH: 29cm;
+    PADDING-TOP: 1cm;
+    BORDER-BOTTOM: black 4px solid;
+    BACKGROUND-COLOR: white;
+    TEXT-ALIGN: center
+}
