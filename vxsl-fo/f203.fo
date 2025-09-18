@@ -25,9 +25,9 @@
   <!-- ===== Params / Vars ===== -->
   <xsl:param name="_mode"/>
   <xsl:param name="data-url"/>
-  <xsl:param name="stamp-urls" as="xs:string*" select="()"/>
-  <xsl:param name="stamps-per-row" as="xs:integer" select="3"/>
-  <xsl:param name="stamp-width" as="xs:string" select="'60mm'"/>
+  <xsl:param name="stamp-list"/>
+  <xsl:param name="stamps-per-row" select="3"/>
+  <xsl:param name="stamp-width"    select="'60mm'"/>
   <xsl:variable name="field_name_width" select="'40%'"/>
   <xsl:variable name="UnitPrecision" select="t:envelope/*/t:fund/@unit-precision"/>
 
@@ -151,33 +151,16 @@
 
       <fo:page-sequence master-reference="{$orient}">
         <fo:static-content flow-name="xsl-region-after">
-            <xsl:if test="exists($stamp-urls)">
+            <xsl:if test="string-length(normalize-space($stamp-list)) &gt; 0">
                 <fo:table table-layout="fixed" width="100%">
-                <xsl:variable name="cols" select="min(($stamps-per-row, count($stamp-urls)))"/>
-                <xsl:for-each select="1 to $cols">
-                    <fo:table-column column-width="proportional-column-width(1)"/>
-                </xsl:for-each>
-                <fo:table-body>
-                    <xsl:for-each-group select="$stamp-urls"
-                                        group-adjacent="floor((position()-1) div $stamps-per-row)">
-                    <fo:table-row>
-                        <xsl:for-each select="current-group()">
-                        <fo:table-cell display-align="center">
-                            <fo:block text-align="center">
-                            <fo:external-graphic
-                                src="url({.})"
-                                width="{$stamp-width}"
-                                content-width="scale-down-to-fit"
-                                scaling="uniform"/>
-                            </fo:block>
-                        </fo:table-cell>
-                        </xsl:for-each>
-                        <xsl:for-each select="1 to $stamps-per-row - count(current-group())">
-                        <fo:table-cell><fo:block/></fo:table-cell>
-                        </xsl:for-each>
-                    </fo:table-row>
-                    </xsl:for-each-group>
-                </fo:table-body>
+                    <xsl:call-template name="emit-cols">
+                        <xsl:with-param name="n" select="$stamps-per-row"/>
+                    </xsl:call-template>
+                    <fo:table-body>
+                        <xsl:call-template name="render-rows">
+                        <xsl:with-param name="list" select="$stamp-list"/>
+                        </xsl:call-template>
+                    </fo:table-body>
                 </fo:table>
             </xsl:if>
         </fo:static-content>
@@ -780,5 +763,112 @@
       <xsl:value-of select="concat(substring($datestr, 9, 2), '.', substring($datestr, 6, 2), '.', substring($datestr, 1, 4))"/>
     </xsl:if>
   </xsl:template>
+
+    <!-- вывести N колонок -->
+    <xsl:template name="emit-cols">
+        <xsl:param name="n"/>
+        <xsl:if test="$n &gt; 0">
+            <fo:table-column column-width="proportional-column-width(1)"/>
+            <xsl:call-template name="emit-cols">
+            <xsl:with-param name="n" select="$n - 1"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- вывести N пустых ячеек -->
+    <xsl:template name="emit-empty-cells">
+        <xsl:param name="n"/>
+        <xsl:if test="$n &gt; 0">
+            <fo:table-cell><fo:block/></fo:table-cell>
+            <xsl:call-template name="emit-empty-cells">
+            <xsl:with-param name="n" select="$n - 1"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- вывести до $remain ячеек из начала строки-списка -->
+    <xsl:template name="render-cells">
+        <xsl:param name="list"/>
+        <xsl:param name="remain"/>
+        <xsl:choose>
+            <xsl:when test="$remain = 0">
+            <!-- закончили ряд -->
+            </xsl:when>
+            <xsl:when test="string-length(normalize-space($list)) = 0">
+            <!-- список кончился — добиваем пустыми -->
+            <xsl:call-template name="emit-empty-cells">
+                <xsl:with-param name="n" select="$remain"/>
+            </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+            <!-- берём голову/хвост -->
+            <xsl:variable name="delim" select="'|'"/>
+            <xsl:variable name="head"
+                select="normalize-space(substring-before(concat($list,$delim), $delim))"/>
+            <xsl:variable name="tail" select="substring-after($list, $delim)"/>
+
+            <fo:table-cell display-align="center">
+                <fo:block text-align="center">
+                <fo:external-graphic
+                    src="{concat('url(''', $head, ''')')}"
+                    width="{$stamp-width}"
+                    content-width="scale-down-to-fit"
+                    scaling="uniform"/>
+                </fo:block>
+            </fo:table-cell>
+
+            <xsl:call-template name="render-cells">
+                <xsl:with-param name="list"   select="$tail"/>
+                <xsl:with-param name="remain" select="$remain - 1"/>
+            </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- отбросить первые N токенов и вернуть остаток -->
+    <xsl:template name="drop-n">
+        <xsl:param name="list"/>
+        <xsl:param name="n"/>
+        <xsl:choose>
+            <xsl:when test="$n &lt;= 0">
+            <xsl:value-of select="$list"/>
+            </xsl:when>
+            <xsl:when test="contains($list, '|')">
+            <xsl:call-template name="drop-n">
+                <xsl:with-param name="list" select="substring-after($list, '|')"/>
+                <xsl:with-param name="n" select="$n - 1"/>
+            </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+            <!-- отбросили больше, чем есть -->
+            <xsl:text></xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- рисуем строки по $stamps-per-row -->
+    <xsl:template name="render-rows">
+        <xsl:param name="list"/>
+        <xsl:if test="string-length(normalize-space($list)) &gt; 0">
+            <fo:table-row>
+            <xsl:call-template name="render-cells">
+                <xsl:with-param name="list"   select="$list"/>
+                <xsl:with-param name="remain" select="$stamps-per-row"/>
+            </xsl:call-template>
+            </fo:table-row>
+
+            <xsl:variable name="rest">
+            <xsl:call-template name="drop-n">
+                <xsl:with-param name="list" select="$list"/>
+                <xsl:with-param name="n"    select="$stamps-per-row"/>
+            </xsl:call-template>
+            </xsl:variable>
+
+            <xsl:call-template name="render-rows">
+            <xsl:with-param name="list" select="$rest"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
 
 </xsl:stylesheet>
