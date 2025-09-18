@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp "&#160;">]>
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    xmlns:t="http://cabinet.frsd.ru/schema/ufml3/rel-1/"
+    xmlns:uf="urn:frsd:ufml3-filter"
+    xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:dse="http://cabinet.frsd.ru/schema/xmldsigext-frsd/rel-1/"
+    exclude-result-prefixes="xsl t uf dsig dse"
+    version="1.0">
+
+  <!-- ===== Output ===== -->
+  <xsl:output method="xml" encoding="windows-1251" indent="no"/>
+
+  <!-- ===== Keys ===== -->
+  <xsl:key name="total_key" match="/t:envelope/t:f203/t:rpt-data/t:opr-info" use="@code"/>
+  <xsl:key name="currency_key"
+           match="/t:envelope/t:f203/t:rpt-data/t:opr-info"
+           use="substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4)"/>
+
+  <!-- ===== Number formats ===== -->
+  <xsl:decimal-format name="unit" decimal-separator="." grouping-separator=" "/>
+
+  <!-- ===== Params / Vars ===== -->
+  <xsl:param name="_mode"/>
+  <xsl:param name="data-url"/>
+  <xsl:variable name="field_name_width" select="'40%'"/>
+  <xsl:variable name="UnitPrecision" select="t:envelope/*/t:fund/@unit-precision"/>
+
+  <!-- ===== Attribute Sets (FO styling ~ ufml.css) ===== -->
+  <xsl:attribute-set name="base.text">
+    <xsl:attribute name="font-family">Arial, Helvetica, sans-serif</xsl:attribute>
+    <xsl:attribute name="font-size">8pt</xsl:attribute>
+    <xsl:attribute name="color">#000000</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="h1">
+    <xsl:attribute name="font-size">16pt</xsl:attribute>
+    <xsl:attribute name="font-weight">bold</xsl:attribute>
+    <xsl:attribute name="space-before">12pt</xsl:attribute>
+    <xsl:attribute name="space-after">12pt</xsl:attribute>
+    <xsl:attribute name="text-align">center</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="h2">
+    <xsl:attribute name="font-size">10pt</xsl:attribute>
+    <xsl:attribute name="font-weight">bold</xsl:attribute>
+    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="text-decoration">underline</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="p.default" use-attribute-sets="base.text">
+    <xsl:attribute name="space-before">2pt</xsl:attribute>
+    <xsl:attribute name="space-after">2pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="table.base" use-attribute-sets="base.text">
+    <xsl:attribute name="border-top">0.5pt dotted lightgray</xsl:attribute>
+    <xsl:attribute name="table-layout">fixed</xsl:attribute>
+    <xsl:attribute name="width">100%</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="table.form_table2.header.cell">
+    <xsl:attribute name="background-color">#C0C0C0</xsl:attribute>
+    <xsl:attribute name="font-size">10pt</xsl:attribute>
+    <xsl:attribute name="font-weight">bold</xsl:attribute>
+    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="border-top">1pt solid #C0C0C0</xsl:attribute>
+    <xsl:attribute name="border-bottom">1pt solid #808080</xsl:attribute>
+    <xsl:attribute name="border-left">1pt solid #C0C0C0</xsl:attribute>
+    <xsl:attribute name="border-right">1pt solid #FFFFFF</xsl:attribute>
+    <xsl:attribute name="padding">2pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="table.form_table2.body.cell">
+    <xsl:attribute name="border-bottom">1pt solid #C0C0C0</xsl:attribute>
+    <xsl:attribute name="padding">2pt</xsl:attribute>
+    <xsl:attribute name="vertical-align">top</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="table.form_table.header.cell">
+    <xsl:attribute name="text-align">end</xsl:attribute>
+    <xsl:attribute name="color">#565656</xsl:attribute>
+    <xsl:attribute name="border-bottom">1pt solid #C0C0C0</xsl:attribute>
+    <xsl:attribute name="padding">4pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="table.form_table.body.cell">
+    <xsl:attribute name="border-bottom">1pt solid #C0C0C0</xsl:attribute>
+    <xsl:attribute name="padding">4pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="number_right">
+    <xsl:attribute name="text-align">end</xsl:attribute>
+    <xsl:attribute name="wrap-option">no-wrap</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="footnote.block" use-attribute-sets="base.text">
+    <xsl:attribute name="font-size">6pt</xsl:attribute>
+    <xsl:attribute name="space-before">6pt</xsl:attribute>
+    <xsl:attribute name="border-top">0.5pt dotted #808080</xsl:attribute>
+    <xsl:attribute name="padding-top">2pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="dsig.block" use-attribute-sets="base.text">
+    <xsl:attribute name="font-size">7pt</xsl:attribute>
+    <xsl:attribute name="space-before">6pt</xsl:attribute>
+  </xsl:attribute-set>
+
+  <!-- ===== Page orientation API (compatible with your usage) ===== -->
+  <xsl:template name="orient">portrait</xsl:template>
+  <!-- main file overrides to landscape; we keep same name and call it -->
+
+  <!-- ===== Root: envelope → FO ===== -->
+  <xsl:template match="/t:envelope">
+    <xsl:variable name="orient">
+      <xsl:call-template name="orient"/>
+    </xsl:variable>
+
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+      <fo:layout-master-set>
+        <fo:simple-page-master master-name="portrait"
+                               page-width="210mm" page-height="297mm"
+                               margin-top="15mm" margin-bottom="15mm"
+                               margin-left="20mm" margin-right="20mm">
+          <fo:region-body margin-top="5mm"/>
+        </fo:simple-page-master>
+        <fo:simple-page-master master-name="landscape"
+                               page-width="297mm" page-height="210mm"
+                               margin-top="15mm" margin-bottom="15mm"
+                               margin-left="15mm" margin-right="15mm">
+          <fo:region-body margin-top="5mm"/>
+        </fo:simple-page-master>
+      </fo:layout-master-set>
+
+      <fo:page-sequence master-reference="{$orient}">
+        <fo:flow flow-name="xsl-region-body" xsl:use-attribute-sets="base.text">
+          <xsl:apply-templates select="t:*" mode="body"/>
+          <xsl:call-template name="dsig_data"/>
+        </fo:flow>
+      </fo:page-sequence>
+    </fo:root>
+  </xsl:template>
+
+  <!-- ===== t:f203 body ===== -->
+  <xsl:template match="t:f203" mode="body">
+    <xsl:call-template name="шапка_прсд"/>
+    <xsl:call-template name="ф_заголовок"/>
+    <xsl:call-template name="ф_фонд_таб"/>
+    <xsl:apply-templates select="t:rpt-data"/>
+    <xsl:call-template name="подпись_реестра"/>
+
+    <!-- footnote with unique operation codes -->
+    <fo:block xsl:use-attribute-sets="footnote.block">
+      <fo:inline baseline-shift="super" font-size="80%">*</fo:inline>
+      <fo:inline> </fo:inline>
+      <xsl:for-each select="t:rpt-data/t:opr-info[count(. | key('total_key', @code)[1])=1]">
+        <fo:inline>
+          <xsl:value-of select="@code"/> - <xsl:call-template name="oper-text"/>; 
+        </fo:inline>
+      </xsl:for-each>
+    </fo:block>
+  </xsl:template>
+
+  <!-- ===== Report table (details + totals) ===== -->
+  <xsl:template match="t:rpt-data">
+    <!-- Details table -->
+    <fo:table xsl:use-attribute-sets="table.base" space-before="6pt">
+      <fo:table-column column-width="proportional-column-width(5)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(5)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(7)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(19)"/>
+      <fo:table-column column-width="proportional-column-width(19)"/>
+
+      <fo:table-header>
+        <fo:table-row>
+          <xsl:for-each select="('Код операции','№ лицевого счета','Кол-во паев','Цена пая, курс','Общая сумма','Надбавка / Скидка','Сумма без надбавки / скидки','Основание операции','Владелец паев')">
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.header.cell">
+              <fo:block><xsl:value-of select="."/></fo:block>
+            </fo:table-cell>
+          </xsl:for-each>
+        </fo:table-row>
+      </fo:table-header>
+
+      <fo:table-body>
+        <xsl:apply-templates select="t:opr-info"/>
+      </fo:table-body>
+    </fo:table>
+
+    <!-- Totals caption -->
+    <fo:block space-before="8pt" space-after="4pt" font-weight="bold" margin-left="6mm">ИТОГО</fo:block>
+
+    <!-- Totals table -->
+    <fo:table xsl:use-attribute-sets="table.base">
+      <fo:table-column column-width="proportional-column-width(5)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+      <fo:table-column column-width="proportional-column-width(10)"/>
+
+      <fo:table-header>
+        <fo:table-row>
+          <xsl:for-each select="('Код операции','Кол-во операций','Кол-во паев','Общая сумма','Надбавка / Скидка')">
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.header.cell">
+              <fo:block><xsl:value-of select="."/></fo:block>
+            </fo:table-cell>
+          </xsl:for-each>
+        </fo:table-row>
+      </fo:table-header>
+
+      <fo:table-body>
+        <xsl:for-each select="t:opr-info[count(. | key('currency_key', substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4))[1])=1]">
+          <xsl:sort select="@code"/>
+          <fo:table-row>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell">
+              <fo:block><xsl:value-of select="@code"/></fo:block>
+            </fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+              <fo:block>
+                <xsl:value-of select="format-number(count(key('currency_key', substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4))), '# ##0', 'unit')"/>
+              </fo:block>
+            </fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+              <fo:block>
+                <xsl:value-of select="format-number(sum(key('currency_key', substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4))/@unit-qty), '# ##0.000000#', 'unit')"/>
+              </fo:block>
+            </fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+              <fo:block>
+                <xsl:call-template name="currency_blk"/>
+                <xsl:value-of select="format-number(sum(key('currency_key', substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4))/@payment), '# ##0.00##', 'unit')"/>
+              </fo:block>
+            </fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+              <fo:block>
+                <xsl:call-template name="currency_blk"/>
+                <xsl:value-of select="format-number(sum(key('currency_key', substring(concat(@code,'|',@currency, 'RUB'), 1, string-length(@code)+4))/@fee), '# ##0.00##', 'unit')"/>
+              </fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+        </xsl:for-each>
+      </fo:table-body>
+    </fo:table>
+  </xsl:template>
+
+  <!-- ===== Row rendering ===== -->
+  <xsl:template match="t:opr-info">
+    <fo:table-row>
+      <!-- Код операции -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell">
+        <xsl:if test="t:operation-party">
+          <xsl:attribute name="border">none</xsl:attribute>
+        </xsl:if>
+        <fo:block><xsl:value-of select="@code"/></fo:block>
+      </fo:table-cell>
+
+      <!-- № лицевого -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell">
+        <fo:block>
+          <xsl:value-of select="t:unit-holder/t:unit-account/@num"/>
+          <fo:inline> [<xsl:value-of select="t:unit-holder/t:unit-account/@type-code"/>] </fo:inline>
+          <xsl:apply-templates mode="common-property-name" select="t:unit-holder/t:unit-account/@common-property-code"/>
+          <xsl:text> </xsl:text>
+          <xsl:apply-templates select="t:unit-holder/t:unit-account/@is-insurance"/>
+        </fo:block>
+      </fo:table-cell>
+
+      <!-- Кол-во паев -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+        <fo:block><xsl:apply-templates select="@unit-qty" mode="uqty"/></fo:block>
+      </fo:table-cell>
+
+      <!-- Цена пая, курс -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+        <fo:block>
+          <xsl:if test="@unit-price &gt; 0">
+            <xsl:call-template name="price_currency_blk"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates select="@unit-price" mode="money2"/>
+            <xsl:text> </xsl:text>
+          </xsl:if>
+          <fo:inline color="Blue" font-size="7pt">
+            <xsl:apply-templates select="@currency-rate" mode="money2"/>
+          </fo:inline>
+        </fo:block>
+      </fo:table-cell>
+
+      <!-- Общая сумма + п/д -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+        <fo:block>
+          <xsl:if test="@payment &gt; 0">
+            <xsl:call-template name="currency_blk"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates select="@payment" mode="money2"/>
+          </xsl:if>
+          <xsl:apply-templates select="t:pmt-info"/>
+        </fo:block>
+      </fo:table-cell>
+
+      <!-- Надбавка/Скидка -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+        <fo:block>
+          <xsl:if test="@fee &gt; 0">
+            <xsl:call-template name="currency_blk"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates select="@fee" mode="money2"/>
+          </xsl:if>
+        </fo:block>
+      </fo:table-cell>
+
+      <!-- Сумма без надбавки/скидки -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell number_right">
+        <xsl:variable name="v1">0<xsl:apply-templates select="@payment" mode="get-number"/></xsl:variable>
+        <xsl:variable name="v2">0<xsl:apply-templates select="@fee" mode="get-number"/></xsl:variable>
+        <xsl:variable name="v3">0<xsl:apply-templates select="@currency-rate" mode="get-number"/></xsl:variable>
+        <fo:block>
+          <xsl:choose>
+            <xsl:when test="$v1 &gt; 0">
+              <xsl:call-template name="currency_blk"/>
+              <xsl:value-of select="format-number(number($v1)-number($v2), '# ##0.00##', 'unit')"/>
+            </xsl:when>
+            <xsl:otherwise><fo:leader leader-pattern="space"/></xsl:otherwise>
+          </xsl:choose>
+        </fo:block>
+      </fo:table-cell>
+
+      <!-- Основание операции -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell">
+        <fo:block><xsl:apply-templates select="t:operation-cause"/></fo:block>
+      </fo:table-cell>
+
+      <!-- Владелец паев -->
+      <fo:table-cell xsl:use-attribute-sets="table.form_table2.body.cell">
+        <fo:block><xsl:apply-templates mode="str" select="t:unit-holder/t:person"/></fo:block>
+      </fo:table-cell>
+    </fo:table-row>
+
+    <!-- Доп. строка по контрагенту/фонду обмена -->
+    <xsl:if test="t:operation-party">
+      <fo:table-row>
+        <fo:table-cell/>
+        <fo:table-cell number-columns-spanned="8" xsl:use-attribute-sets="table.form_table2.body.cell">
+          <fo:block color="#7A7A7A">
+            <xsl:apply-templates select="t:operation-party"/>
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- ===== Operation cause/party ===== -->
+  <xsl:template match="t:operation-cause">
+    <fo:block><xsl:value-of select="@name"/></fo:block>
+    <fo:block>№ <xsl:value-of select="@num"/></fo:block>
+    <fo:block>
+      дата <xsl:apply-templates mode="sqldate" select="@date"/>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="t:operation-party">
+    <xsl:apply-templates select="t:fund"/>
+    <xsl:apply-templates select="t:unit-holder/t:person"/>
+  </xsl:template>
+
+  <xsl:template match="t:operation-party/t:fund">
+    <fo:block>Фонд обмена: <xsl:value-of select="@fullname"/></fo:block>
+  </xsl:template>
+
+  <xsl:template match="t:operation-party/t:unit-holder/t:person">
+    <fo:block>Контрагент: <xsl:value-of select="@fullname"/></fo:block>
+  </xsl:template>
+
+  <!-- ===== Payment info ===== -->
+  <xsl:template match="t:pmt-info">
+    <fo:block color="Blue" font-size="7pt" space-before="2pt">
+      <fo:block>
+        <fo:inline text-decoration="overline">Сумма платежа <xsl:call-template name="currency"/> <xsl:apply-templates select="@payment" mode="money2"/></fo:inline>
+      </fo:block>
+      <fo:block>ПД № <xsl:value-of select="@num"/> дата <xsl:apply-templates mode="sqldate" select="@date"/></fo:block>
+      <fo:block>Выписка от <xsl:apply-templates mode="sqldate" select="@stmt-date"/></fo:block>
+    </fo:block>
+  </xsl:template>
+
+  <!-- ===== Small helper table (unit-account-info) ===== -->
+  <xsl:template match="t:unit-account-info">
+    <fo:table xsl:use-attribute-sets="table.base" space-before="6pt">
+      <fo:table-column column-width="proportional-column-width(1)"/>
+      <fo:table-column column-width="proportional-column-width(2)"/>
+      <fo:table-column column-width="proportional-column-width(1)"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="@num"/></fo:block></fo:table-cell>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="t:person/@fullname"/></fo:block></fo:table-cell>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:apply-templates select="t:unit-account-division/@unit-qty" mode="uqty"/></fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+  </xsl:template>
+
+  <!-- ===== Header / title / fund table ===== -->
+  <xsl:template name="ф_регномер">
+    <fo:block>
+      <fo:inline font-size="7pt" text-decoration="underline" text-align="end"> 
+        <xsl:value-of select="@form"/>
+      </fo:inline>
+      <xsl:apply-templates mode="regnum" select="@reg-num[. and . != '']"/>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="@reg-num" mode="regnum">
+    <fo:block text-align="start" font-size="7pt">Исх. № <xsl:value-of select="."/>; Дата <xsl:apply-templates mode="sqldate-date" select="../@reg-date"/></fo:block>
+  </xsl:template>
+
+  <xsl:template name="ф_заголовок">
+    <xsl:call-template name="ф_регномер"/>
+    <fo:block xsl:use-attribute-sets="h1">
+      <xsl:value-of select="@name"/>
+      <fo:block xsl:use-attribute-sets="base.text" font-size="8pt">отчетная дата &#160;<xsl:apply-templates mode="sqldate" select="@oper-date"/></fo:block>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template name="ф_фонд_таб">
+    <fo:table xsl:use-attribute-sets="table.base" space-before="4pt" space-after="4pt">
+      <fo:table-column column-width="{$field_name_width}"/>
+      <fo:table-column column-width="proportional-column-width(1)"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.header.cell"><fo:block>Полное наименование паевого инвестиционного фонда (далее - Фонд)</fo:block></fo:table-cell>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="t:fund/@fullname"/></fo:block></fo:table-cell>
+        </fo:table-row>
+        <xsl:if test="t:fund/@rule-num">
+          <fo:table-row>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table.header.cell"><fo:block>Регистрационный номер</fo:block></fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="t:fund/@rule-num"/></fo:block></fo:table-cell>
+          </fo:table-row>
+        </xsl:if>
+        <fo:table-row>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.header.cell"><fo:block>Управляющая компания</fo:block></fo:table-cell>
+          <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@fullname"/></fo:block></fo:table-cell>
+        </fo:table-row>
+        <xsl:if test="t:fund/t:fund-subject[@subject-code='УК']/@num">
+          <fo:table-row>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table.header.cell"><fo:block>ОГРН</fo:block></fo:table-cell>
+            <fo:table-cell xsl:use-attribute-sets="table.form_table.body.cell"><fo:block><xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@num"/></fo:block></fo:table-cell>
+          </fo:table-row>
+        </xsl:if>
+      </fo:table-body>
+    </fo:table>
+  </xsl:template>
+
+  <xsl:template name="подпись_реестра">
+    <fo:block space-before="18pt" space-after="6pt" text-align="center" font-size="7pt">
+      Подпись уполномоченного лица регистратора
+      <fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length.optimum="80mm" leader-length.minimum="60mm" leader-length.maximum="100mm"/>
+    </fo:block>
+    <fo:block text-align="center" font-size="7pt" space-before="6pt">М.П.</fo:block>
+  </xsl:template>
+
+  <xsl:template name="шапка_прсд">
+    <fo:block space-after="6pt" border-bottom="0.5pt solid #C0C0C0" padding-bottom="4pt" text-align="center">
+      <fo:block font-weight="bold" font-size="8pt">ЗАО "Первый Специализированный Депозитарий"</fo:block>
+      <fo:block font-size="7pt">ОГРН:1027700373678, Почтовый адрес: 125167 Москва, 4-я ул. 8 Марта, д. 6А. тел: +7 (495) 223-6607</fo:block>
+    </fo:block>
+  </xsl:template>
+
+  <!-- ===== DSIG ===== -->
+  <xsl:template name="dsig_data">
+    <xsl:apply-templates select="//dsig:Signature" mode="dsig_data"/>
+  </xsl:template>
+
+  <xsl:template match="dsig:Signature" mode="dsig_data">
+    <fo:block xsl:use-attribute-sets="dsig.block">
+      <fo:block font-weight="bold" space-after="4pt" border-bottom="0.5pt dotted gray" padding-left="6pt" width="50%">Данные ЭЦП</fo:block>
+      <xsl:apply-templates select="dsig:KeyInfo/dsig:X509Data"/>
+      <xsl:apply-templates select="dsig:Object/dsig:SignatureProperties"/>
+      <xsl:apply-templates select="dsig:SignatureValue"/>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="dsig:KeyInfo/dsig:X509Data">
+    <fo:block>
+      <fo:inline font-weight="bold">Владелец сертификата:</fo:inline>
+      <fo:inline> </fo:inline>
+      <fo:inline>
+        <xsl:value-of disable-output-escaping="yes" select="dsig:X509Certificate/processing-instruction('frsd-cert-CommonName')"/>
+        &#160;&#160;[<xsl:value-of disable-output-escaping="yes" select="dsig:X509Certificate/processing-instruction('frsd-cert-OrganizationName')"/>]
+      </fo:inline>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="dsig:Object/dsig:SignatureProperties">
+    <xsl:apply-templates select="dsig:SignatureProperty"/>
+  </xsl:template>
+
+  <xsl:template match="dsig:SignatureProperty">
+    <fo:block>
+      <fo:inline font-weight="bold">Время подписи по Гринвичу (SignatureTime):</fo:inline>
+      <fo:inline> </fo:inline>
+      <fo:inline><xsl:apply-templates select="dse:Events/@SignatureTime" mode="dsigdate"/></fo:inline>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="dsig:SignatureValue">
+    <fo:block>
+      <fo:inline font-weight="bold">Значение ЭЦП (SignatureValue):</fo:inline>
+      <fo:inline> </fo:inline>
+      <fo:block-container>
+        <fo:block wrap-option="wrap" linefeed-treatment="preserve"><xsl:value-of select="."/></fo:block>
+      </fo:block-container>
+    </fo:block>
+  </xsl:template>
+
+  <!-- ===== String renderers ===== -->
+  <xsl:template mode="str" match="t:document">
+    <xsl:value-of select="@name"/>&#160;<xsl:value-of select="@ser"/>&#160;<xsl:value-of select="@num"/>
+  </xsl:template>
+
+  <xsl:template mode="str" match="t:person">
+    <xsl:value-of select="@fullname"/>
+    <xsl:text> </xsl:text>
+    <fo:inline>[<xsl:apply-templates mode="str" select="t:document"/>]</fo:inline>
+    <xsl:apply-templates mode="person" select="@share"/>
+  </xsl:template>
+
+  <xsl:template mode="person" match="@share">
+    <fo:inline> <fo:inline font-weight="normal" color="#565656">Доля - </fo:inline><xsl:value-of select="."/></fo:inline>
+  </xsl:template>
+
+  <!-- ===== Quantities / money / numbers ===== -->
+  <xsl:template mode="uqty" match="@*">
+    <xsl:call-template name="RoundedDecimalFormat">
+      <xsl:with-param name="num" select="."/>
+      <xsl:with-param name="digitCount" select="$UnitPrecision"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template mode="money" match="@*">
+    <xsl:value-of select="format-number(., '# ##0.0000', 'unit')"/>
+  </xsl:template>
+
+  <xsl:template mode="money2" match="@*">
+    <xsl:value-of select="format-number(., '# ##0.00##', 'unit')"/>
+  </xsl:template>
+
+  <xsl:template match="@*" mode="get-number">
+    <xsl:choose>
+      <xsl:when test="string(number(.)) != 'NaN'"><xsl:value-of select="."/></xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="RoundedDecimalFormat">
+    <xsl:param name="num"/>
+    <xsl:param name="digitCount"/>
+    <xsl:choose>
+      <xsl:when test="$digitCount = 7"><xsl:value-of select="format-number($num, '# ##0.0000000#', 'unit')"/></xsl:when>
+      <xsl:when test="$digitCount = 6"><xsl:value-of select="format-number($num, '# ##0.000000##', 'unit')"/></xsl:when>
+      <xsl:when test="$digitCount = 5"><xsl:value-of select="format-number($num, '# ##0.00000###', 'unit')"/></xsl:when>
+      <xsl:when test="$digitCount = 4"><xsl:value-of select="format-number($num, '# ##0.0000####', 'unit')"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="format-number($num, '# ##0.000000##', 'unit')"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- ===== Currency helpers ===== -->
+  <xsl:template name="currency_blk">
+    <fo:inline color="grey">
+      <xsl:call-template name="currency"/> 
+    </fo:inline>
+  </xsl:template>
+
+  <xsl:template name="price_currency_blk">
+    <fo:inline color="grey">
+      <xsl:call-template name="price-currency"/> 
+    </fo:inline>
+  </xsl:template>
+
+  <xsl:template name="price-currency">
+    <xsl:call-template name="currency_code">
+      <xsl:with-param name="n"><xsl:value-of select="@price-currency"/></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="currency">
+    <xsl:call-template name="currency_code">
+      <xsl:with-param name="n"><xsl:value-of select="@currency"/></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="currency_code">
+    <xsl:param name="n"/>
+    <xsl:choose>
+      <xsl:when test="$n = 'USD'">$ </xsl:when>
+      <xsl:when test="$n = 'RUB'">&#8381; </xsl:when>
+      <xsl:when test="string($n)=''">&#8381; </xsl:when>
+      <xsl:when test="$n = 'EUR'">€ </xsl:when>
+      <xsl:otherwise><xsl:value-of select="$n"/> </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="oper-text">
+    <xsl:choose>
+      <xsl:when test="@code = 'ОТКР'">ОТКРЫТИЕ ЛИЦЕВОГО СЧЕТА</xsl:when>
+      <xsl:when test="@code = 'ЗАЧ'">ПРИХОДНАЯ ЗАПИСЬ</xsl:when>
+      <xsl:when test="@code = 'СПИ'">РАСХОДНАЯ ЗАПИСЬ</xsl:when>
+      <xsl:when test="@code = 'ОБЗ'">ОБРЕМЕНЕНИЕ ЗАЛОГОМ</xsl:when>
+      <xsl:when test="@code = 'ПРЕ'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
+      <xsl:when test="@code = 'ФПЗ'">ФИКСАЦИЯ ПРАВА ЗАЛОГА</xsl:when>
+      <xsl:when test="@code = 'ЗАКР'">ЗАКРЫТИЕ ЛИЦЕВОГО СЧЕТА</xsl:when>
+      <xsl:when test="@code = 'ИЗМ'">ИЗМЕНЕНИЕ АНКЕТНЫХ ДАННЫХ</xsl:when>
+      <xsl:when test="@code = 'ИУЗ'">ИЗМЕНЕНИЕ УСЛОВИЙ ЗАЛОГА</xsl:when>
+      <xsl:when test="@code = 'ПРЗ'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
+      <xsl:when test="@code = 'ПРЗД'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
+      <xsl:when test="@code = 'СБЛОК'">СНЯТИЕ БЛОКИРОВАНИЯ ПАЕВ</xsl:when>
+      <xsl:when test="@code = 'БЛОК'">БЛОКИРОВАНИЕ ПАЕВ</xsl:when>
+      <xsl:when test="@code = 'ПРВЫП'">ПРЕДОСТАВЛЕНИЕ ВЫПИСКИ</xsl:when>
+      <xsl:when test="@code = 'ЗАЧВП'">ПРИХОДНАЯ ЗАПИСЬ ПО СЧЕТУ "ВЫДАВАЕМЫЕ ПАИ"</xsl:when>
+      <xsl:when test="@code = 'СПИВП'">РАСХОДНАЯ ЗАПИСЬ ПО СЧЕТУ "ВЫДАВАЕМЫЕ ПАИ"</xsl:when>
+      <xsl:when test="@code = 'БЛДОП'">БЛОКИРОВАНИЕ ДО ПОДТВЕРЖДЕНИЯ ЦЕНТРАЛЬНОГО ДЕПОЗИТАРИЯ</xsl:when>
+      <xsl:when test="@code = 'СБЛПП'">СНЯТИЕ БЛОКИРОВАНИЯ ПОСЛЕ ПОДТВЕРЖДЕНИЯ ЦЕНТРАЛЬНОГО ДЕПОЗИТАРИЯ</xsl:when>
+      <xsl:when test="@code = 'ОГРАН'">ОГРАНИЧЕНИЕ ОПЕРАЦИЙ</xsl:when>
+      <xsl:when test="@code = 'СНОГР'">СНЯТИЕ ОГРАНИЧЕНИЯ ОПЕРАЦИЙ</xsl:when>
+      <xsl:when test="@code = 'ПРИЕМ'">ПРИЕМ РЕЕСТРА</xsl:when>
+      <xsl:when test="@name"><xsl:value-of select="@name"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="@code"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="@common-property-code" mode="common-property-name">
+    <xsl:choose>
+      <xsl:when test=". = 'Н'"></xsl:when>
+      <xsl:when test=". = 'НЕТ'"></xsl:when>
+      <xsl:when test=". = 'Д'">долевая</xsl:when>
+      <xsl:when test=". = 'ДОЛ'">долевая</xsl:when>
+      <xsl:when test=". = 'С'">совместная</xsl:when>
+      <xsl:when test=". = 'СОВ'">совместная</xsl:when>
+      <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="@common-property-code" mode="common-property-name2">
+    <xsl:choose>
+      <xsl:when test=". = 'Н'">нет</xsl:when>
+      <xsl:when test=". = 'НЕТ'">нет</xsl:when>
+      <xsl:when test=". = 'Д'">долевая</xsl:when>
+      <xsl:when test=". = 'ДОЛ'">долевая</xsl:when>
+      <xsl:when test=". = 'С'">совместная</xsl:when>
+      <xsl:when test=". = 'СОВ'">совместная</xsl:when>
+      <xsl:otherwise>[<xsl:value-of select="."/>]</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="@is-insurance">
+    <xsl:choose>
+      <xsl:when test=". = 1">[ДСЖ]</xsl:when>
+      <xsl:when test=". = 'true'">[ДСЖ]</xsl:when>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- ===== Date helpers (from html-sys.xsl) ===== -->
+  <xsl:template mode="date" match="@*|*">
+    <xsl:if test="string-length(normalize-space(.)) &gt; 0">
+      <xsl:call-template name="_date">
+        <xsl:with-param name="datestr" select="."/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template mode="sqldate" match="@*|*">
+    <xsl:if test="string-length(normalize-space(.)) &gt; 0">
+      <xsl:call-template name="_sqldate">
+        <xsl:with-param name="datestr" select="."/>
+      </xsl:call-template>
+      <xsl:if test="substring-after(.,'T') != '00:00:00'">
+        &#160;<xsl:value-of select="substring(., 12, 5)"/>
+      </xsl:if>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template mode="sqldate-date" match="@*|*">
+    <xsl:if test="string-length(normalize-space(.)) &gt; 0">
+      <xsl:call-template name="_sqldate">
+        <xsl:with-param name="datestr" select="."/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template mode="dsigdate" match="@*|*">
+    <xsl:if test="string-length(normalize-space(.)) &gt; 0">
+      <xsl:call-template name="_sqldate">
+        <xsl:with-param name="datestr" select="."/>
+      </xsl:call-template>
+      <xsl:if test="substring-after(.,'T') != '00:00:00'">
+        &#160;<xsl:value-of select="substring(., 12, 8)"/>
+      </xsl:if>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="_date">
+    <xsl:param name="datestr"/>
+    <xsl:if test="string-length(normalize-space($datestr)) &gt; 0">
+      <xsl:value-of select="concat(substring($datestr, 7, 2), '.', substring($datestr, 5, 2), '.', substring($datestr, 1, 4))"/>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="_sqldate">
+    <xsl:param name="datestr"/>
+    <xsl:if test="string-length(normalize-space($datestr)) &gt; 0">
+      <xsl:value-of select="concat(substring($datestr, 9, 2), '.', substring($datestr, 6, 2), '.', substring($datestr, 1, 4))"/>
+    </xsl:if>
+  </xsl:template>
+
+</xsl:stylesheet>
