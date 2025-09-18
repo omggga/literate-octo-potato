@@ -177,8 +177,8 @@
   <xsl:template match="t:rpt-data">
     <!-- Details table -->
     <fo:table xsl:use-attribute-sets="table.base" space-before="6pt">
-        <fo:table-column column-width="proportional-column-width(4)"/>
-        <fo:table-column column-width="proportional-column-width(9)"/>
+        <fo:table-column column-width="proportional-column-width(6)"/>
+        <fo:table-column column-width="proportional-column-width(8)"/>
         <fo:table-column column-width="proportional-column-width(7)"/>
         <fo:table-column column-width="proportional-column-width(10)"/>
         <fo:table-column column-width="proportional-column-width(10)"/>
