@@ -428,7 +428,7 @@
 
   <xsl:template name="ф_заголовок">
     <xsl:call-template name="ф_регномер"/>
-    <fo:block xsl:use-attribute-sets="h2">
+    <fo:block xsl:use-attribute-sets="h1">
       <xsl:value-of select="@name"/>
       <fo:block xsl:use-attribute-sets="base.text" font-size="8pt">отчетная дата &#160;<xsl:apply-templates mode="sqldate" select="@oper-date"/></fo:block>
     </fo:block>
@@ -466,7 +466,7 @@
   <xsl:template name="подпись_реестра">
     <fo:block space-before="18pt" space-after="6pt" text-align="center" font-size="7pt">
       Подпись уполномоченного лица регистратора
-      <fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length.optimum="50mm" leader-length.minimum="70mm" leader-length.maximum="90mm"/>
+      <fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length.minimum="50mm" leader-length.optimum="70mm" leader-length.maximum="90mm"/>
     </fo:block>
     <fo:block text-align="center" font-size="7pt" space-before="6pt">М.П.</fo:block>
   </xsl:template>
