@@ -26,9 +26,10 @@
   <xsl:param name="_mode"/>
   <xsl:param name="data-url"/>
   <xsl:param name="stamp-list"/>
-  <xsl:param name="stamps-per-row" select="3"/>
+  <xsl:param name="stamps-per-row" select="2"/>
   <xsl:param name="stamp-width"    select="'60mm'"/>
   <xsl:param name="stamp-height" select="'25mm'"/>
+  <xsl:param name="stamps-page-break" select="false()"/>
   <xsl:variable name="field_name_width" select="'40%'"/>
   <xsl:variable name="UnitPrecision" select="t:envelope/*/t:fund/@unit-precision"/>
 
@@ -138,47 +139,36 @@
                                page-width="210mm" page-height="297mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="20mm" margin-right="20mm">
-                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
-                <fo:region-after extent="40mm" display-align="before"/>
+                <fo:region-body margin-top="5mm" margin-bottom="20mm"/>
             </fo:simple-page-master>
             <fo:simple-page-master master-name="landscape"
                                page-width="297mm" page-height="210mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="15mm" margin-right="15mm">
-                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
-                <fo:region-after extent="40mm" display-align="before"/>
+                <fo:region-body margin-top="5mm" margin-bottom="20mm"/>
             </fo:simple-page-master>
         </fo:layout-master-set>
 
         <fo:page-sequence master-reference="{$orient}">
-            <fo:static-content flow-name="xsl-region-after">
-                <xsl:if test="string-length(normalize-space($stamp-list)) &gt; 0">
-                   <fo:retrieve-marker
-                    retrieve-class-name="stamps"
-                    retrieve-boundary="page-sequence"
-                    retrieve-position="last-ending-within-page"/>
-                </xsl:if>
-            </fo:static-content>
-
             <fo:flow flow-name="xsl-region-body" xsl:use-attribute-sets="base.text">
                 <xsl:apply-templates select="t:*" mode="body"/>
                 <xsl:call-template name="dsig_data"/>
-                <fo:block>
-                    <fo:marker marker-class-name="stamps">
-                        <xsl:if test="string-length(normalize-space($stamp-list)) &gt; 0">
-                            <fo:table table-layout="fixed" width="100%">
-                                <xsl:call-template name="emit-cols">
-                                    <xsl:with-param name="n" select="$stamps-per-row"/>
-                                </xsl:call-template>
-                                <fo:table-body>
-                                    <xsl:call-template name="render-rows">
-                                        <xsl:with-param name="list" select="$stamp-list"/>
-                                    </xsl:call-template>
-                                </fo:table-body>
-                            </fo:table>
-                         </xsl:if>
-                    </fo:marker>
-                </fo:block>
+                <xsl:if test="string-length(normalize-space($stamp-list)) &gt; 0">
+                  <!-- при желании можно увести штампы на отдельную страницу -->
+                  <xsl:if test="$stamps-page-break">
+                    <fo:block break-before="page"/>
+                  </xsl:if>
+                  <fo:table table-layout="fixed" width="100%" space-before="4pt">
+                    <xsl:call-template name="emit-cols">
+                      <xsl:with-param name="n" select="$stamps-per-row"/>
+                    </xsl:call-template>
+                    <fo:table-body>
+                      <xsl:call-template name="render-rows">
+                        <xsl:with-param name="list" select="$stamp-list"/>
+                      </xsl:call-template>
+                    </fo:table-body>
+                  </fo:table>
+                </xsl:if>
             </fo:flow>
         </fo:page-sequence>
     </fo:root>
@@ -822,8 +812,8 @@
                 <fo:block text-align="center" line-height="0" space-before="0pt" space-after="0pt">
                     <fo:external-graphic
                     src="{concat('url(''', $head, ''')')}"
-                    content-width="scale-down-to-fit"
-                    content-height="{$stamp-height}"
+                    content-width="{$stamp-width}"
+                    content-height="auto"
                     scaling="uniform"/>
                 </fo:block>
             </fo:table-cell>
