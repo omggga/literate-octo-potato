@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Наименование: файл объектов
+РќР°РёРјРµРЅРѕРІР°РЅРёРµ: С„Р°Р№Р» РѕР±СЉРµРєС‚РѕРІ
 
 $Revision: 1.2 $
 $Date: 2009/01/21 15:22:37 $
@@ -121,7 +121,7 @@ $Date: 2009/01/21 15:22:37 $
 	</xsl:element>
 </xsl:template>
 
-<xsl:template name="ф_регномер">
+<xsl:template name="С„_СЂРµРіРЅРѕРјРµСЂ">
 	<div style="zoom: 1;">
 		<span class="field_comment" style="float: right; text-decoration: underline"><xsl:value-of select="@form"/></span>
 		<xsl:apply-templates mode="regnum" select="@reg-num[. and . != '']"/>
@@ -129,66 +129,66 @@ $Date: 2009/01/21 15:22:37 $
 	</div>
 </xsl:template>
 
-<xsl:template name="ф_заголовок">
-	<xsl:call-template name="ф_регномер"/>
+<xsl:template name="С„_Р·Р°РіРѕР»РѕРІРѕРє">
+	<xsl:call-template name="С„_СЂРµРіРЅРѕРјРµСЂ"/>
 
 	<h1><xsl:value-of select="@name"/>
-		<br/><span class="std_font" style="text-align: center">отчетная дата &#160;<xsl:apply-templates mode="sqldate" select="@oper-date"/></span>
+		<br/><span class="std_font" style="text-align: center">РѕС‚С‡РµС‚РЅР°СЏ РґР°С‚Р° &#160;<xsl:apply-templates mode="sqldate" select="@oper-date"/></span>
 	</h1>
 </xsl:template>
 
-<xsl:template name="ф_заголовок1">
-	<xsl:call-template name="ф_регномер"/>
+<xsl:template name="С„_Р·Р°РіРѕР»РѕРІРѕРє1">
+	<xsl:call-template name="С„_СЂРµРіРЅРѕРјРµСЂ"/>
 	
 	<h1><xsl:value-of select="@name"/></h1>
 </xsl:template>
 
-<xsl:template name="ф_фонд_таб">
+<xsl:template name="С„_С„РѕРЅРґ_С‚Р°Р±">
 	<table xsl:use-attribute-sets="form_table" class="form_table" rules="rows">
 		<col width="40%"/>
 		<tr>
-			<th>Полное наименование паевого инвестиционного фонда (далее - Фонд)</th>
+			<th>РџРѕР»РЅРѕРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ РїР°РµРІРѕРіРѕ РёРЅРІРµСЃС‚РёС†РёРѕРЅРЅРѕРіРѕ С„РѕРЅРґР° (РґР°Р»РµРµ - Р¤РѕРЅРґ)</th>
 			<td><xsl:value-of select="t:fund/@fullname"/></td>
 		</tr>
 		<xsl:if test="t:fund/@rule-num">
 			<tr style="border-top: 1pt dotted lightgray">
-				<th>Регистрационный номер</th>
+				<th>Р РµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ</th>
 				<td><xsl:value-of select="t:fund/@rule-num"/></td>
 			</tr>
 		</xsl:if>
 		<tr style="border-top: 1pt dotted lightgray">
-			<th>Управляющая компания</th>
-			<td><xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@fullname"/></td>
+			<th>РЈРїСЂР°РІР»СЏСЋС‰Р°СЏ РєРѕРјРїР°РЅРёСЏ</th>
+			<td><xsl:value-of select="t:fund/t:fund-subject[@subject-code='РЈРљ']/@fullname"/></td>
 		</tr>
-		<xsl:if test="t:fund/t:fund-subject[@subject-code='УК']/@num">
+		<xsl:if test="t:fund/t:fund-subject[@subject-code='РЈРљ']/@num">
 			<tr style="border-top: 1pt dotted lightgray">
-				<th>ОГРН</th>
-				<td><xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@num"/></td>
+				<th>РћР“Р Рќ</th>
+				<td><xsl:value-of select="t:fund/t:fund-subject[@subject-code='РЈРљ']/@num"/></td>
 			</tr>
 		</xsl:if>
 	</table>
 </xsl:template>
 
-<xsl:template name="ф_фонд">
+<xsl:template name="С„_С„РѕРЅРґ">
 	<div class="fund_header">
-		<p class="field_name">Полное наименование паевого инвестиционного фонда (далее - Фонд)</p>
+		<p class="field_name">РџРѕР»РЅРѕРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ РїР°РµРІРѕРіРѕ РёРЅРІРµСЃС‚РёС†РёРѕРЅРЅРѕРіРѕ С„РѕРЅРґР° (РґР°Р»РµРµ - Р¤РѕРЅРґ)</p>
 		<p class="fund_name"><xsl:value-of select="t:fund/@fullname"/></p>
 		<xsl:if test="t:fund/@rule-num">
-		<p class="field_name" style="text-align: center" >регистрационный номер: </p> <p class="fund_name" style="text-align: center"><xsl:value-of select="t:fund/@rule-num"/></p>
+		<p class="field_name" style="text-align: center" >СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ: </p> <p class="fund_name" style="text-align: center"><xsl:value-of select="t:fund/@rule-num"/></p>
 		</xsl:if>
-		<p class="field_name">Управляющая компания</p>
-		<p class="fund_mc_name"><xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@fullname"/></p>
-		<xsl:if test="t:fund/t:fund-subject[@subject-code='УК']/@num">
-			<p class="std_font" style="text-align: center">ОГРН: <xsl:value-of select="t:fund/t:fund-subject[@subject-code='УК']/@num"/></p>
+		<p class="field_name">РЈРїСЂР°РІР»СЏСЋС‰Р°СЏ РєРѕРјРїР°РЅРёСЏ</p>
+		<p class="fund_mc_name"><xsl:value-of select="t:fund/t:fund-subject[@subject-code='РЈРљ']/@fullname"/></p>
+		<xsl:if test="t:fund/t:fund-subject[@subject-code='РЈРљ']/@num">
+			<p class="std_font" style="text-align: center">РћР“Р Рќ: <xsl:value-of select="t:fund/t:fund-subject[@subject-code='РЈРљ']/@num"/></p>
 		</xsl:if>
 	</div>
 </xsl:template>
 
 <xsl:template match="@reg-num" mode="regnum">
-	<span style="float: left; text-align: right; font-size: 75%;">Исх. № <xsl:value-of select="."/>; Дата <xsl:apply-templates mode="sqldate-date" select="../@reg-date"/></span>
+	<span style="float: left; text-align: right; font-size: 75%;">РСЃС…. в„– <xsl:value-of select="."/>; Р”Р°С‚Р° <xsl:apply-templates mode="sqldate-date" select="../@reg-date"/></span>
 </xsl:template>
 
-	<xsl:template name="заголовок-выписки">
+	<xsl:template name="Р·Р°РіРѕР»РѕРІРѕРє-РІС‹РїРёСЃРєРё">
 		
 		<div class="form_frame" style="margin-top: 0em;">
 			
@@ -197,11 +197,11 @@ $Date: 2009/01/21 15:22:37 $
 				<col/>
 				<tbody>
 					<tr>
-						<th>Номер и тип лицевого счета</th>
+						<th>РќРѕРјРµСЂ Рё С‚РёРї Р»РёС†РµРІРѕРіРѕ СЃС‡РµС‚Р°</th>
 						<td><xsl:value-of select="t:unit-account-info/@num"/> (<xsl:value-of select="t:unit-account-info/@name"/>) <xsl:apply-templates mode="common-property-name" select="t:unit-account-info/@common-property-code"/><xsl:apply-templates select="t:unit-account-info/@is-insurance"/></td>
 					</tr>
 					<tr>
-						<th>Дата, на которую выписка подтверждает данные счета<span class="note">(данные подтверждаются на конец дня)</span></th>
+						<th>Р”Р°С‚Р°, РЅР° РєРѕС‚РѕСЂСѓСЋ РІС‹РїРёСЃРєР° РїРѕРґС‚РІРµСЂР¶РґР°РµС‚ РґР°РЅРЅС‹Рµ СЃС‡РµС‚Р°<span class="note">(РґР°РЅРЅС‹Рµ РїРѕРґС‚РІРµСЂР¶РґР°СЋС‚СЃСЏ РЅР° РєРѕРЅРµС† РґРЅСЏ)</span></th>
 						<td><xsl:apply-templates mode="sqldate" select="../@oper-date"/></td>
 					</tr>
 				</tbody>
@@ -211,51 +211,51 @@ $Date: 2009/01/21 15:22:37 $
 	</xsl:template>
 	
 
-<xsl:template name="подпись_реестра">
+<xsl:template name="РїРѕРґРїРёСЃСЊ_СЂРµРµСЃС‚СЂР°">
 <div style="margin-top: 2cm;">
-	<p style="font-size: 7pt; text-align: center">Подпись уполномоченного лица регистратора _______________________________</p>
-	<p style="font-size: 7pt; text-align: center; margin-top: 20px;">М.П.</p>
+	<p style="font-size: 7pt; text-align: center">РџРѕРґРїРёСЃСЊ СѓРїРѕР»РЅРѕРјРѕС‡РµРЅРЅРѕРіРѕ Р»РёС†Р° СЂРµРіРёСЃС‚СЂР°С‚РѕСЂР° _______________________________</p>
+	<p style="font-size: 7pt; text-align: center; margin-top: 20px;">Рњ.Рџ.</p>
 </div>
 </xsl:template>
 
-<xsl:template name="подпись_мп">
+<xsl:template name="РїРѕРґРїРёСЃСЊ_РјРї">
 <div style="margin-top: 2cm;">
-	<p style="font-size: 7pt; text-align: center">Подпись _______________________________</p>
-	<p style="font-size: 7pt; text-align: center; margin-top: 20px;">М.П.</p>
+	<p style="font-size: 7pt; text-align: center">РџРѕРґРїРёСЃСЊ _______________________________</p>
+	<p style="font-size: 7pt; text-align: center; margin-top: 20px;">Рњ.Рџ.</p>
 </div>
 </xsl:template>
 
-<xsl:template name="шапка_прсд">
+<xsl:template name="С€Р°РїРєР°_РїСЂСЃРґ">
 <div style="margin-top: 0px; border-bottom: #C0C0C0 1pt solid;">
-	<p style="font-size: 8pt; font-weight: bold; text-align: center">ЗАО "Первый Специализированный Депозитарий"</p>
-	<p style="font-size: 7pt; text-align: center;">ОГРН:1027700373678, Почтовый адрес: 125167 Москва, 4-я ул. 8 Марта, д. 6А. тел: +7 (495) 223-6607</p>
+	<p style="font-size: 8pt; font-weight: bold; text-align: center">Р—РђРћ "РџРµСЂРІС‹Р№ РЎРїРµС†РёР°Р»РёР·РёСЂРѕРІР°РЅРЅС‹Р№ Р”РµРїРѕР·РёС‚Р°СЂРёР№"</p>
+	<p style="font-size: 7pt; text-align: center;">РћР“Р Рќ:1027700373678, РџРѕС‡С‚РѕРІС‹Р№ Р°РґСЂРµСЃ: 125167 РњРѕСЃРєРІР°, 4-СЏ СѓР». 8 РњР°СЂС‚Р°, Рґ. 6Рђ. С‚РµР»: +7 (495) 223-6607</p>
 </div>
 </xsl:template>
 
-<xsl:template mode="ф_владелец_лс" match="t:person">
+<xsl:template mode="С„_РІР»Р°РґРµР»РµС†_Р»СЃ" match="t:person">
 	<tr>
-		<th>Ф.И.О./Полное наименование</th>
+		<th>Р¤.Р.Рћ./РџРѕР»РЅРѕРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ</th>
 		<td><xsl:value-of select="@fullname"/></td>
 	</tr>
 	
 	<xsl:apply-templates mode="form" select="t:document"/>
-	<xsl:apply-templates mode="ф_владелец_лс" select="@share"/>
+	<xsl:apply-templates mode="С„_РІР»Р°РґРµР»РµС†_Р»СЃ" select="@share"/>
 </xsl:template>
 
-<xsl:template mode="ф_владелец_лс" match="@share">
+<xsl:template mode="С„_РІР»Р°РґРµР»РµС†_Р»СЃ" match="@share">
 	<tr>
-		<th>Доля</th>
+		<th>Р”РѕР»СЏ</th>
 		<td><xsl:value-of select="."/></td>
 	</tr>
 </xsl:template>
 
 <xsl:template mode="form" match="t:document">
 	<tr>
-		<th>Документ, удостоверяющий личность/ Документ о государственной регистрации юридического лица</th>
+		<th>Р”РѕРєСѓРјРµРЅС‚, СѓРґРѕСЃС‚РѕРІРµСЂСЏСЋС‰РёР№ Р»РёС‡РЅРѕСЃС‚СЊ/ Р”РѕРєСѓРјРµРЅС‚ Рѕ РіРѕСЃСѓРґР°СЂСЃС‚РІРµРЅРЅРѕР№ СЂРµРіРёСЃС‚СЂР°С†РёРё СЋСЂРёРґРёС‡РµСЃРєРѕРіРѕ Р»РёС†Р°</th>
 		<td>	<xsl:value-of select="@name"/>&#160;
 				<xsl:value-of select="@ser"/>&#160;
 				<xsl:value-of select="@num"/>
-				<xsl:text>, выдан </xsl:text>
+				<xsl:text>, РІС‹РґР°РЅ </xsl:text>
 				<xsl:apply-templates mode="sqldate" select="@date"/>&#160;<xsl:value-of select="@sertified"/>
 		</td>
 	</tr>
@@ -267,7 +267,7 @@ $Date: 2009/01/21 15:22:37 $
 
 <xsl:template match="dsig:Signature" mode="dsig_data">
 <div class="dsig_block noprint">
-	<span class="h">Данные ЭЦП</span>
+	<span class="h">Р”Р°РЅРЅС‹Рµ Р­Р¦Рџ</span>
 	<xsl:apply-templates select="dsig:KeyInfo/dsig:X509Data"/>
 	<xsl:apply-templates select="dsig:Object/dsig:SignatureProperties"/>
 	<xsl:apply-templates select="dsig:SignatureValue"/>
@@ -277,8 +277,8 @@ $Date: 2009/01/21 15:22:37 $
 <xsl:template match="dsig:KeyInfo/dsig:X509Data">
 	<xsl:variable name="cert-path" select="processing-instruction('frsd-cert-path')"/>
 	<div>
-		<span class="h">Владелец сертификата:</span>
-		<a href="{$cert-path}" class="v" title="Посмотреть сертификат">
+		<span class="h">Р’Р»Р°РґРµР»РµС† СЃРµСЂС‚РёС„РёРєР°С‚Р°:</span>
+		<a href="{$cert-path}" class="v" title="РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃРµСЂС‚РёС„РёРєР°С‚">
 			<xsl:value-of disable-output-escaping="yes" select="dsig:X509Certificate/processing-instruction('frsd-cert-CommonName')"/>
 			&#160;&#160;&#32;[<xsl:value-of disable-output-escaping="yes" select="dsig:X509Certificate/processing-instruction('frsd-cert-OrganizationName')"/>]
 		</a>
@@ -291,7 +291,7 @@ $Date: 2009/01/21 15:22:37 $
 
 <xsl:template match="dsig:SignatureProperty">
 	<div>
-		<span class="h">Время подписи по Гринвичу (SignatureTime):</span> 
+		<span class="h">Р’СЂРµРјСЏ РїРѕРґРїРёСЃРё РїРѕ Р“СЂРёРЅРІРёС‡Сѓ (SignatureTime):</span> 
 		<span class="v"><xsl:apply-templates select="dse:Events/@SignatureTime" mode="dsigdate"/></span> 
 	</div>
 </xsl:template>
@@ -299,7 +299,7 @@ $Date: 2009/01/21 15:22:37 $
 
 <xsl:template match="dsig:SignatureValue">
 	<div>
-		<span class="h">Значение ЭЦП (SignatureValue):</span> 
+		<span class="h">Р—РЅР°С‡РµРЅРёРµ Р­Р¦Рџ (SignatureValue):</span> 
 		<span class="vbin"><xsl:value-of select="."/></span> 
 	</div>
 </xsl:template>
@@ -307,7 +307,7 @@ $Date: 2009/01/21 15:22:37 $
 <xsl:template name="xml_source_url">
 	<xsl:if test="starts-with($data-url, 'http://') or starts-with($data-url, 'frsd://')">
 		<xsl:if test="contains($data-url, '/doc/id/')">
-			<a href="{concat(substring-before($data-url,'&amp;'), '&amp;get=Ufml3')}" class="noprint">Сохранить как XML+Ufml3</a>
+			<a href="{concat(substring-before($data-url,'&amp;'), '&amp;get=Ufml3')}" class="noprint">РЎРѕС…СЂР°РЅРёС‚СЊ РєР°Рє XML+Ufml3</a>
 		</xsl:if>
 	</xsl:if>
 </xsl:template>
@@ -325,7 +325,7 @@ $Date: 2009/01/21 15:22:37 $
 </xsl:template>
 
 <xsl:template mode="person" match="@share">
- <span class="blk"><span class="field_name nowrap">Доля - </span><xsl:value-of select="."/></span>
+ <span class="blk"><span class="field_name nowrap">Р”РѕР»СЏ - </span><xsl:value-of select="."/></span>
 </xsl:template>
 
 <xsl:template mode="uqty" match="@*">
@@ -425,34 +425,34 @@ $Date: 2009/01/21 15:22:37 $
 		<xsl:when test="$n = 'USD'">$ </xsl:when>
 		<xsl:when test="$n = 'RUB'">&#8381; </xsl:when>
 		<xsl:when test="string($n)=''">&#8381; </xsl:when>
-		<xsl:when test="$n = 'EUR'">€ </xsl:when>
+		<xsl:when test="$n = 'EUR'">в‚¬ </xsl:when>
 		<xsl:otherwise><xsl:value-of select="$n"/> </xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
 <xsl:template name="oper-text">
 	<xsl:choose>
-	<xsl:when test="@code = 'ОТКР'">ОТКРЫТИЕ ЛИЦЕВОГО СЧЕТА</xsl:when>
-	<xsl:when test="@code = 'ЗАЧ'">ПРИХОДНАЯ ЗАПИСЬ</xsl:when>
-	<xsl:when test="@code = 'СПИ'">РАСХОДНАЯ ЗАПИСЬ</xsl:when>
-	<xsl:when test="@code = 'ОБЗ'">ОБРЕМЕНЕНИЕ ЗАЛОГОМ</xsl:when>
-	<xsl:when test="@code = 'ПРЕ'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
-	<xsl:when test="@code = 'ФПЗ'">ФИКСАЦИЯ ПРАВА ЗАЛОГА</xsl:when>
-	<xsl:when test="@code = 'ЗАКР'">ЗАКРЫТИЕ ЛИЦЕВОГО СЧЕТА</xsl:when>
-	<xsl:when test="@code = 'ИЗМ'">ИЗМЕНЕНИЕ АНКЕТНЫХ ДАННЫХ</xsl:when>
-	<xsl:when test="@code = 'ИУЗ'">ИЗМЕНЕНИЕ УСЛОВИЙ ЗАЛОГА</xsl:when>		
-	<xsl:when test="@code = 'ПРЗ'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
-	<xsl:when test="@code = 'ПРЗД'">ПРЕКРАЩЕНИЕ ЗАЛОГА</xsl:when>
-	<xsl:when test="@code = 'СБЛОК'">СНЯТИЕ БЛОКИРОВАНИЯ ПАЕВ</xsl:when>
-	<xsl:when test="@code = 'БЛОК'">БЛОКИРОВАНИЕ ПАЕВ</xsl:when>
-	<xsl:when test="@code = 'ПРВЫП'">ПРЕДОСТАВЛЕНИЕ ВЫПИСКИ</xsl:when>
-	<xsl:when test="@code = 'ЗАЧВП'">ПРИХОДНАЯ ЗАПИСЬ ПО СЧЕТУ "ВЫДАВАЕМЫЕ ПАИ"</xsl:when>
-	<xsl:when test="@code = 'СПИВП'">РАСХОДНАЯ ЗАПИСЬ ПО СЧЕТУ "ВЫДАВАЕМЫЕ ПАИ"</xsl:when>
-	<xsl:when test="@code = 'БЛДОП'">БЛОКИРОВАНИЕ ДО ПОДТВЕРЖДЕНИЯ ЦЕНТРАЛЬНОГО ДЕПОЗИТАРИЯ</xsl:when>
-	<xsl:when test="@code = 'СБЛПП'">СНЯТИЕ БЛОКИРОВАНИЯ ПОСЛЕ ПОДТВЕРЖДЕНИЯ ЦЕНТРАЛЬНОГО ДЕПОЗИТАРИЯ</xsl:when>
-	<xsl:when test="@code = 'ОГРАН'">ОГРАНИЧЕНИЕ ОПЕРАЦИЙ</xsl:when>
-	<xsl:when test="@code = 'СНОГР'">СНЯТИЕ ОГРАНИЧЕНИЯ ОПЕРАЦИЙ</xsl:when>
-	<xsl:when test="@code = 'ПРИЕМ'">ПРИЕМ РЕЕСТРА</xsl:when>
+	<xsl:when test="@code = 'РћРўРљР '">РћРўРљР Р«РўРР• Р›РР¦Р•Р’РћР“Рћ РЎР§Р•РўРђ</xsl:when>
+	<xsl:when test="@code = 'Р—РђР§'">РџР РРҐРћР”РќРђРЇ Р—РђРџРРЎР¬</xsl:when>
+	<xsl:when test="@code = 'РЎРџР'">Р РђРЎРҐРћР”РќРђРЇ Р—РђРџРРЎР¬</xsl:when>
+	<xsl:when test="@code = 'РћР‘Р—'">РћР‘Р Р•РњР•РќР•РќРР• Р—РђР›РћР“РћРњ</xsl:when>
+	<xsl:when test="@code = 'РџР Р•'">РџР Р•РљР РђР©Р•РќРР• Р—РђР›РћР“Рђ</xsl:when>
+	<xsl:when test="@code = 'Р¤РџР—'">Р¤РРљРЎРђР¦РРЇ РџР РђР’Рђ Р—РђР›РћР“Рђ</xsl:when>
+	<xsl:when test="@code = 'Р—РђРљР '">Р—РђРљР Р«РўРР• Р›РР¦Р•Р’РћР“Рћ РЎР§Р•РўРђ</xsl:when>
+	<xsl:when test="@code = 'РР—Рњ'">РР—РњР•РќР•РќРР• РђРќРљР•РўРќР«РҐ Р”РђРќРќР«РҐ</xsl:when>
+	<xsl:when test="@code = 'РРЈР—'">РР—РњР•РќР•РќРР• РЈРЎР›РћР’РР™ Р—РђР›РћР“Рђ</xsl:when>		
+	<xsl:when test="@code = 'РџР Р—'">РџР Р•РљР РђР©Р•РќРР• Р—РђР›РћР“Рђ</xsl:when>
+	<xsl:when test="@code = 'РџР Р—Р”'">РџР Р•РљР РђР©Р•РќРР• Р—РђР›РћР“Рђ</xsl:when>
+	<xsl:when test="@code = 'РЎР‘Р›РћРљ'">РЎРќРЇРўРР• Р‘Р›РћРљРР РћР’РђРќРРЇ РџРђР•Р’</xsl:when>
+	<xsl:when test="@code = 'Р‘Р›РћРљ'">Р‘Р›РћРљРР РћР’РђРќРР• РџРђР•Р’</xsl:when>
+	<xsl:when test="@code = 'РџР Р’Р«Рџ'">РџР Р•Р”РћРЎРўРђР’Р›Р•РќРР• Р’Р«РџРРЎРљР</xsl:when>
+	<xsl:when test="@code = 'Р—РђР§Р’Рџ'">РџР РРҐРћР”РќРђРЇ Р—РђРџРРЎР¬ РџРћ РЎР§Р•РўРЈ "Р’Р«Р”РђР’РђР•РњР«Р• РџРђР"</xsl:when>
+	<xsl:when test="@code = 'РЎРџРР’Рџ'">Р РђРЎРҐРћР”РќРђРЇ Р—РђРџРРЎР¬ РџРћ РЎР§Р•РўРЈ "Р’Р«Р”РђР’РђР•РњР«Р• РџРђР"</xsl:when>
+	<xsl:when test="@code = 'Р‘Р›Р”РћРџ'">Р‘Р›РћРљРР РћР’РђРќРР• Р”Рћ РџРћР”РўР’Р•Р Р–Р”Р•РќРРЇ Р¦Р•РќРўР РђР›Р¬РќРћР“Рћ Р”Р•РџРћР—РРўРђР РРЇ</xsl:when>
+	<xsl:when test="@code = 'РЎР‘Р›РџРџ'">РЎРќРЇРўРР• Р‘Р›РћРљРР РћР’РђРќРРЇ РџРћРЎР›Р• РџРћР”РўР’Р•Р Р–Р”Р•РќРРЇ Р¦Р•РќРўР РђР›Р¬РќРћР“Рћ Р”Р•РџРћР—РРўРђР РРЇ</xsl:when>
+	<xsl:when test="@code = 'РћР“Р РђРќ'">РћР“Р РђРќРР§Р•РќРР• РћРџР•Р РђР¦РР™</xsl:when>
+	<xsl:when test="@code = 'РЎРќРћР“Р '">РЎРќРЇРўРР• РћР“Р РђРќРР§Р•РќРРЇ РћРџР•Р РђР¦РР™</xsl:when>
+	<xsl:when test="@code = 'РџР РР•Рњ'">РџР РР•Рњ Р Р•Р•РЎРўР Рђ</xsl:when>
 	<xsl:when test="@name"><xsl:value-of select="@name"/></xsl:when>	
 	<xsl:otherwise><xsl:value-of select="@code"/></xsl:otherwise>
 	</xsl:choose>
@@ -460,42 +460,42 @@ $Date: 2009/01/21 15:22:37 $
 
 <xsl:template match="@common-property-code" mode="common-property">
 	<xsl:choose>
-	<xsl:when test=". = 'Н'"></xsl:when>
-	<xsl:when test=". = 'НЕТ'"></xsl:when>
-	<xsl:when test=". = 'Д'">[ДОЛ]</xsl:when>
-	<xsl:when test=". = 'ДОЛ'">[ДОЛ]</xsl:when>
-	<xsl:when test=". = 'С'">[СОВМ]</xsl:when>
-	<xsl:when test=". = 'СОВ'">[СОВМ]</xsl:when>
+	<xsl:when test=". = 'Рќ'"></xsl:when>
+	<xsl:when test=". = 'РќР•Рў'"></xsl:when>
+	<xsl:when test=". = 'Р”'">[Р”РћР›]</xsl:when>
+	<xsl:when test=". = 'Р”РћР›'">[Р”РћР›]</xsl:when>
+	<xsl:when test=". = 'РЎ'">[РЎРћР’Рњ]</xsl:when>
+	<xsl:when test=". = 'РЎРћР’'">[РЎРћР’Рњ]</xsl:when>
 	<xsl:otherwise>[<xsl:value-of select="."/>]</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 <xsl:template match="@common-property-code" mode="common-property-name">
 	<xsl:choose>
-	<xsl:when test=". = 'Н'"></xsl:when>
-	<xsl:when test=". = 'НЕТ'"></xsl:when>
-	<xsl:when test=". = 'Д'">долевая</xsl:when>
-	<xsl:when test=". = 'ДОЛ'">долевая</xsl:when>
-	<xsl:when test=". = 'С'">совместная</xsl:when>
-	<xsl:when test=". = 'СОВ'">совместная</xsl:when>
+	<xsl:when test=". = 'Рќ'"></xsl:when>
+	<xsl:when test=". = 'РќР•Рў'"></xsl:when>
+	<xsl:when test=". = 'Р”'">РґРѕР»РµРІР°СЏ</xsl:when>
+	<xsl:when test=". = 'Р”РћР›'">РґРѕР»РµРІР°СЏ</xsl:when>
+	<xsl:when test=". = 'РЎ'">СЃРѕРІРјРµСЃС‚РЅР°СЏ</xsl:when>
+	<xsl:when test=". = 'РЎРћР’'">СЃРѕРІРјРµСЃС‚РЅР°СЏ</xsl:when>
 	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 <xsl:template match="@common-property-code" mode="common-property-name2">
 	<xsl:choose>
-	<xsl:when test=". = 'Н'">нет</xsl:when>
-	<xsl:when test=". = 'НЕТ'">нет</xsl:when>
-	<xsl:when test=". = 'Д'">долевая</xsl:when>
-	<xsl:when test=". = 'ДОЛ'">долевая</xsl:when>
-	<xsl:when test=". = 'С'">совместная</xsl:when>
-	<xsl:when test=". = 'СОВ'">совместная</xsl:when>
+	<xsl:when test=". = 'Рќ'">РЅРµС‚</xsl:when>
+	<xsl:when test=". = 'РќР•Рў'">РЅРµС‚</xsl:when>
+	<xsl:when test=". = 'Р”'">РґРѕР»РµРІР°СЏ</xsl:when>
+	<xsl:when test=". = 'Р”РћР›'">РґРѕР»РµРІР°СЏ</xsl:when>
+	<xsl:when test=". = 'РЎ'">СЃРѕРІРјРµСЃС‚РЅР°СЏ</xsl:when>
+	<xsl:when test=". = 'РЎРћР’'">СЃРѕРІРјРµСЃС‚РЅР°СЏ</xsl:when>
 	<xsl:otherwise>[<xsl:value-of select="."/>]</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
 <xsl:template match="@is-insurance">
 	<xsl:choose>
-	<xsl:when test=". = 1">[ДСЖ]</xsl:when>
-	<xsl:when test=". = 'true'">[ДСЖ]</xsl:when>
+	<xsl:when test=". = 1">[Р”РЎР–]</xsl:when>
+	<xsl:when test=". = 'true'">[Р”РЎР–]</xsl:when>
 	</xsl:choose>
 </xsl:template>
 </xsl:stylesheet>
