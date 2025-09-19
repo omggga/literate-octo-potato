@@ -139,13 +139,13 @@
                                page-width="210mm" page-height="297mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="20mm" margin-right="20mm">
-                <fo:region-body margin-top="5mm" margin-bottom="20mm"/>
+                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
             </fo:simple-page-master>
             <fo:simple-page-master master-name="landscape"
                                page-width="297mm" page-height="210mm"
                                margin-top="15mm" margin-bottom="15mm"
                                margin-left="15mm" margin-right="15mm">
-                <fo:region-body margin-top="5mm" margin-bottom="20mm"/>
+                <fo:region-body margin-top="5mm" margin-bottom="0mm"/>
             </fo:simple-page-master>
         </fo:layout-master-set>
 
