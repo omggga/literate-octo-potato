@@ -113,6 +113,7 @@ $Date: 2009/01/21 15:22:37 $
 		<link href="ufml.css" type="text/css" rel="stylesheet" />
 		<link href="ufml_s.css" type="text/css" rel="stylesheet" media="screen"/>
 		<link href="ufml_p.css" type="text/css" rel="stylesheet" media="print"/>
+		<link href="site" type="text/css" rel="stylesheet" />
 
 		<xsl:call-template name="html_title"/>
 		<xsl:call-template name="inline-css"/>
