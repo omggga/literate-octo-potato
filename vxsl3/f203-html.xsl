@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE xsl:stylesheet [<!ENTITY nbsp "&#160;">]>
 <!--
 $Name:  $
@@ -16,7 +16,7 @@ $Date: 2009/01/21 15:22:37 $
 
 <xsl:import href="./html-base.xsl"/>
 
-<xsl:output method="html" encoding="windows-1251"/>
+<xsl:output method="html" encoding="utf-8"/>
 
 
 <xsl:key name="total_key" match="/t:envelope/t:f203/t:rpt-data/t:opr-info" use="@code"/>
@@ -25,13 +25,13 @@ $Date: 2009/01/21 15:22:37 $
 <xsl:template name="orient">landscape</xsl:template>
 
 <xsl:template match="t:f203" mode="body">
-	<xsl:call-template name="шапка_прсд"/>
-	<xsl:call-template name="ф_заголовок"/>
-	<xsl:call-template name="ф_фонд_таб"/>
+	<xsl:call-template name="С€Р°РїРєР°_РїСЂСЃРґ"/>
+	<xsl:call-template name="С„_Р·Р°РіРѕР»РѕРІРѕРє"/>
+	<xsl:call-template name="С„_С„РѕРЅРґ_С‚Р°Р±"/>
 
 	<xsl:apply-templates select="t:rpt-data"/>
 
-	<xsl:call-template name="подпись_реестра"/>
+	<xsl:call-template name="РїРѕРґРїРёСЃСЊ_СЂРµРµСЃС‚СЂР°"/>
 
 	<div class="footnote">
 		<p class="fnblock"><span class="fn">*</span><span class="text">
@@ -56,15 +56,15 @@ $Date: 2009/01/21 15:22:37 $
 		<col width="19%"/>
 		<thead>
 			<tr>
-				<th>Код операции</th>
-				<th>№ лицевого счета</th>
-				<th>Кол-во паев</th>
-				<th>Цена пая, курс</th>
-				<th>Общая сумма</th>
-				<th>Надбавка / Скидка</th>
-				<th>Сумма без надбавки / скидки</th>
-				<th>Основание операции</th>
-				<th>Владелец паев</th>
+				<th>РљРѕРґ РѕРїРµСЂР°С†РёРё</th>
+				<th>в„– Р»РёС†РµРІРѕРіРѕ СЃС‡РµС‚Р°</th>
+				<th>РљРѕР»-РІРѕ РїР°РµРІ</th>
+				<th>Р¦РµРЅР° РїР°СЏ, РєСѓСЂСЃ</th>
+				<th>РћР±С‰Р°СЏ СЃСѓРјРјР°</th>
+				<th>РќР°РґР±Р°РІРєР° / РЎРєРёРґРєР°</th>
+				<th>РЎСѓРјРјР° Р±РµР· РЅР°РґР±Р°РІРєРё / СЃРєРёРґРєРё</th>
+				<th>РћСЃРЅРѕРІР°РЅРёРµ РѕРїРµСЂР°С†РёРё</th>
+				<th>Р’Р»Р°РґРµР»РµС† РїР°РµРІ</th>
 			</tr>
 		</thead>
 
@@ -73,7 +73,7 @@ $Date: 2009/01/21 15:22:37 $
 		</tbody>
 	</table>
 
-	<p style="margin-top: 12px;margin-left: 20px;"><b>ИТОГО</b></p>
+	<p style="margin-top: 12px;margin-left: 20px;"><b>РРўРћР“Рћ</b></p>
 	<table xsl:use-attribute-sets="form_table2" rules="cols" class="form_table2">
 		<col width="5%"/>
 		<col width="10%"/>
@@ -83,11 +83,11 @@ $Date: 2009/01/21 15:22:37 $
 
 		<thead>
 			<tr>
-				<th>Код операции</th>
-				<th>Кол-во операций</th>
-				<th>Кол-во паев</th>
-				<th>Общая сумма</th>
-				<th>Надбавка / Скидка</th>
+				<th>РљРѕРґ РѕРїРµСЂР°С†РёРё</th>
+				<th>РљРѕР»-РІРѕ РѕРїРµСЂР°С†РёР№</th>
+				<th>РљРѕР»-РІРѕ РїР°РµРІ</th>
+				<th>РћР±С‰Р°СЏ СЃСѓРјРјР°</th>
+				<th>РќР°РґР±Р°РІРєР° / РЎРєРёРґРєР°</th>
 			</tr>
 		</thead>
 
@@ -169,12 +169,12 @@ $Date: 2009/01/21 15:22:37 $
 	<xsl:value-of select="@name"/>
 </span>
 <span class="blk">
-	№ <xsl:value-of select="@num"/>
+	в„– <xsl:value-of select="@num"/>
 </span>
 <span class="blk" style="white-space: nowrap;">
-	дата <xsl:apply-templates mode="sqldate" select="@date"/>
+	РґР°С‚Р° <xsl:apply-templates mode="sqldate" select="@date"/>
 </span>
-	<!--br/>дата регистрации <xsl:apply-templates mode="sqldate" select="@reg-date"/-->
+	<!--br/>РґР°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё <xsl:apply-templates mode="sqldate" select="@reg-date"/-->
 </xsl:template>
 
 <xsl:template match="t:operation-party">
@@ -183,19 +183,19 @@ $Date: 2009/01/21 15:22:37 $
 </xsl:template>
 
 <xsl:template match="t:operation-party/t:fund">
-<span class="blk">Фонд обмена: <xsl:value-of select="@fullname"/></span>
+<span class="blk">Р¤РѕРЅРґ РѕР±РјРµРЅР°: <xsl:value-of select="@fullname"/></span>
 </xsl:template>
 
 <xsl:template match="t:operation-party/t:unit-holder/t:person">
-<span class="blk">Контрагент: <xsl:value-of select="@fullname"/></span>
+<span class="blk">РљРѕРЅС‚СЂР°РіРµРЅС‚: <xsl:value-of select="@fullname"/></span>
 </xsl:template>
 
 <xsl:template match="t:pmt-info">
 <span style="color: Blue; font-size: smaller;">
-	<br/><span style="text-decoration: overline;">Сумма платежа <xsl:call-template name="currency"/> <xsl:apply-templates select="@payment" mode="money2"/></span>
-	<br/>ПД № <xsl:value-of select="@num"/> дата <xsl:apply-templates mode="sqldate" select="@date"/>
-	<br/>Выписка от <xsl:apply-templates mode="sqldate" select="@stmt-date"/>
-	<!--br/>Выписка № <xsl:value-of select="@stmt-num"/> дата <xsl:apply-templates mode="sqldate" select="@stmt-date"/-->
+	<br/><span style="text-decoration: overline;">РЎСѓРјРјР° РїР»Р°С‚РµР¶Р° <xsl:call-template name="currency"/> <xsl:apply-templates select="@payment" mode="money2"/></span>
+	<br/>РџР” в„– <xsl:value-of select="@num"/> РґР°С‚Р° <xsl:apply-templates mode="sqldate" select="@date"/>
+	<br/>Р’С‹РїРёСЃРєР° РѕС‚ <xsl:apply-templates mode="sqldate" select="@stmt-date"/>
+	<!--br/>Р’С‹РїРёСЃРєР° в„– <xsl:value-of select="@stmt-num"/> РґР°С‚Р° <xsl:apply-templates mode="sqldate" select="@stmt-date"/-->
 </span>
 </xsl:template>
 
